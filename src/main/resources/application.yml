@@ -33,6 +33,13 @@ spring:
     serialization:
       write-dates-as-timestamps: false
 
+  # ----------------------------------------------------------
+  # Spring AI (Placeholder para evitar erros no boot)
+  # ----------------------------------------------------------
+  ai:
+    openai:
+      api-key: "placeholder-key-for-local-bootstrap"
+
 # ============================================================
 # Server
 # ============================================================

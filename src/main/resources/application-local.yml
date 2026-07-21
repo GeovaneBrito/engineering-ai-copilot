@@ -1,0 +1,45 @@
+# ============================================================
+# Engineering AI Copilot — Perfil LOCAL
+# Para desenvolvimento com Docker Compose
+# ============================================================
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/copilot_db
+    username: copilot
+    password: copilot_secret
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  # ----------------------------------------------------------
+  # Spring AI — Configuração local (desabilitado por padrão)
+  # Descomentar quando integrar com OpenAI
+  # ----------------------------------------------------------
+  # ai:
+  #   openai:
+  #     api-key: ${OPENAI_API_KEY:sk-placeholder}
+  #     chat:
+  #       options:
+  #         model: gpt-4o
+  #         temperature: 0.7
+
+logging:
+  level:
+    root: INFO
+    com.copilot.ai: DEBUG
+    org.springframework.ai: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+management:
+  endpoint:
+    health:
+      show-details: always

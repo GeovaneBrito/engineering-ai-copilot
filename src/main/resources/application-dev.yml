@@ -1,0 +1,36 @@
+# ============================================================
+# Engineering AI Copilot — Perfil DEV
+# Para ambiente de desenvolvimento compartilhado
+# ============================================================
+
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/copilot_db}
+    username: ${DATABASE_USERNAME:copilot}
+    password: ${DATABASE_PASSWORD:copilot_secret}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # ----------------------------------------------------------
+  # Spring AI — Configuração DEV
+  # ----------------------------------------------------------
+  # ai:
+  #   openai:
+  #     api-key: ${OPENAI_API_KEY}
+  #     chat:
+  #       options:
+  #         model: gpt-4o
+  #         temperature: 0.3
+
+logging:
+  level:
+    root: INFO
+    com.copilot.ai: INFO
+    org.springframework.ai: INFO

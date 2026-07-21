@@ -1,0 +1,64 @@
+# ============================================================
+# Engineering AI Copilot — Docker Compose
+# Serviços: PostgreSQL (pgvector) + Aplicação
+# ============================================================
+
+version: '3.9'
+
+services:
+
+  # ----------------------------------------------------------
+  # PostgreSQL com extensão pgvector
+  # Utilizado como banco relacional e vector store
+  # ----------------------------------------------------------
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: copilot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: copilot_db
+      POSTGRES_USER: copilot
+      POSTGRES_PASSWORD: copilot_secret
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U copilot -d copilot_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - copilot-network
+
+  # ----------------------------------------------------------
+  # Engineering AI Copilot — Aplicação Spring Boot
+  # ----------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: copilot-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/copilot_db
+      SPRING_DATASOURCE_USERNAME: copilot
+      SPRING_DATASOURCE_PASSWORD: copilot_secret
+    ports:
+      - "8080:8080"
+    networks:
+      - copilot-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  copilot-network:
+    driver: bridge
